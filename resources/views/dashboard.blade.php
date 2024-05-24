@@ -25,6 +25,8 @@
                     <th>Username</th>
                     <th>Email</th>
                     <th>Assigned Tasks</th>
+                    <th>Action</th>
+                </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
@@ -32,6 +34,9 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->tasks_count }}</td>
+                    <td>
+                        <a href="{{ route('user.tasks', $user->id) }}" class="btn btn-primary">View Tasks</a>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -45,4 +50,3 @@
 
 </html>
 @endsection
-

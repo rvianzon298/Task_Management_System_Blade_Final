@@ -26,7 +26,7 @@
                             <div class="ml-10 flex items-baseline space-x-4">
                                 <a href="{{ route('user/taskscopy/index') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
                                 <a href="{{ route('taskcopyshow') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Completed Tasks</a>
-                                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact Us</a>
+
                             </div>
                         </div>
                     </div>
@@ -93,8 +93,8 @@
                             <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
                         </div>
                         <div class="ml-3">
-                            <div class="text-base font-medium leading-none text-white">Tom Cook</div>
-                            <div class="text-sm font-medium leading-none text-gray-400">tom@example.com</div>
+                            <div class="text-base font-medium leading-none text-white"></div>
+                            <div class="text-sm font-medium leading-none text-gray-400"></div>
                         </div>
                         <button class="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                             <span class="sr-only">View notifications</span>

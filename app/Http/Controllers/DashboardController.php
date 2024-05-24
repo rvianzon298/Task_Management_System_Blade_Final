@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User; // Import the User model
+use App\Models\User;
+use App\Models\Task; // Import the User model
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function base()
     {
-        // Fetch all users from the database
-        $users = User::all();
+        // Count total users
+        $totalUsers = User::where('type', 0)->count();
 
-        // Return the dashboard view and pass the users data to it
-        return view('dashboard', compact('users'));
+        // Count total assigned tasks
+        $totalAssignedTasks = Task::count();
+
+        // Count total completed tasks
+        $totalCompletedTasks = Task::where('completed', true)->count();
+
+
+
+        return view('tasks.base', compact('totalUsers', 'totalAssignedTasks', 'totalCompletedTasks'));
     }
+
+
 }

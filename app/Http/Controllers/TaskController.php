@@ -14,10 +14,22 @@ class TaskController extends Controller
         $tasks = Task::where('completed', false)
                     ->orderBy('priority', 'desc')
                     ->orderBy('due_date')
-                    ->get();
+                    ->paginate(5); // Adjust the number of items per page as needed
 
         return view('tasks.index', compact('tasks'));
     }
+
+    public function getStatusAttribute()
+    {
+        if ($this->completed) {
+            return 'Completed';
+        } elseif ($this->due_date < now()) {
+            return 'Late';
+        } else {
+            return 'In Progress';
+        }
+    }
+
 
     public function usertasks()
     {
@@ -36,9 +48,6 @@ class TaskController extends Controller
 
         return view('tasks.create', compact('users'));
     }
-
-
-
 
     public function store(Request $request)
     {
@@ -102,12 +111,23 @@ class TaskController extends Controller
 
     public function showCompleted()
     {
-        $completedTasks = Task::where('completed', true)
-                        ->orderBy('completed_at', 'desc')
-                        ->paginate(5);
+        $completedTasks = Task::with(['assignedUser', 'assignedBy'])
+                            ->where('completed', true)
+                            ->orderBy('completed_at', 'desc')
+                            ->paginate(5);
 
         return view('taskshow', compact('completedTasks'));
     }
+    public function saveRemarks(Request $request, $taskId)
+    {
+        $task = Task::findOrFail($taskId);
+        $task->remarks = $request->remarks;
+        $task->save();
+
+        return response()->json(['message' => 'Remarks saved successfully']);
+    }
+
+
 
 }
 

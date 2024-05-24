@@ -102,5 +102,13 @@ class TaskCopyController extends Controller
 
         return view('taskcopyshow', compact('completedTasksCopy'));
     }
+    public function saveTime(Request $request)
+    {
+        $task = Task::find($request->id);
+        $task->time_tracked = $request->time; // Assuming you have a 'time_tracked' column in your 'tasks' table
+        $task->save();
+
+        return response()->json(['status' => 'success']);
+    }
 
 }

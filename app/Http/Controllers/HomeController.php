@@ -25,6 +25,7 @@ class HomeController extends Controller
 
         // Return the dashboard view and pass the users data to it
         return view('dashboard', compact('users'));
-
     }
+
+
 }

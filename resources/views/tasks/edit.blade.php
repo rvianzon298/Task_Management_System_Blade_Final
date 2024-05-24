@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('contents')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +8,9 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Your content here -->
-    <br>
+    <h2 class="font-bold text-2xl ml-3">Edit Task</h2>
     <br>
     <div class="container">
-    <h1>Edit Task</h1>
     <form action="{{ route('tasks.update', $task->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -41,3 +42,4 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+@endsection

@@ -1,6 +1,6 @@
 @extends('layouts.user')
-@section('contents')
 
+@section('contents')
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,6 +21,7 @@
                 <th>Description</th>
                 <th>Completion Date</th>
                 <th>Status</th>
+                <th>Remarks</th> <!-- New column for remarks -->
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@
                         <span class="badge badge-danger">Late</span>
                     @endif
                 </td>
+                <td>{{ $task->remarks }}</td> <!-- Display remarks -->
             </tr>
             @endforeach
         </tbody>
