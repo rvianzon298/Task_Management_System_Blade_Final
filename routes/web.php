@@ -19,11 +19,11 @@ Route::post('/save-remarks/{taskId}', [TaskController::class, 'saveRemarks'])->n
 
 // User Routes
 Route::middleware(['auth', 'user-access:user'])->group(function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('taskscopy/index');
+    Route::get('/taskscopy', [TaskCopyController::class, 'index'])->name('taskscopy/index');
     Route::get('/taskcopyshow', [TaskCopyController::class, 'showCompletedCopy'])->name('taskcopyshow');
-    Route::get('/taskscopy', [TaskCopyController::class, 'index'])->name('user/taskscopy/index');
     Route::get('/taskscopy/create', [TaskCopyController::class, 'create'])->name('taskscopy.create');
-    Route::post('/taskscopy', [TaskCopyController::class, 'store'])->name('taskscopy.store');
+    Route::post('/taskscopy/store', [TaskCopyController::class, 'store'])->name('taskscopy.store');
     Route::get('/taskscopy/{task}', [TaskCopyController::class, 'edit'])->name('taskscopy.edit');
     Route::put('/taskscopy/{task}', [TaskCopyController::class, 'update'])->name('taskscopy.update');
     Route::delete('/taskscopy/{task}', [TaskCopyController::class, 'destroy'])->name('taskscopy.destroy');
@@ -55,6 +55,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('register', 'register')->name('register');
     Route::post('register', 'registerSave')->name('register.save');
     Route::get('login', 'login')->name('login');
-    Route::post('login', 'loginAction')->name('login.action');
+    Route::post('/secure-login', [AuthController::class, 'secureLoginAction'])->name('secure-login');
+    Route::post('/insecure-login', [AuthController::class, 'insecureLoginAction'])->name('insecure-login');
     Route::get('logout', 'logout')->middleware('auth')->name('logout');
+    Route::post('/check-login-type', [AuthController::class, 'checkLoginType'])->name('check-login-type');
 });

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\QueryException;
 
 class AuthController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
@@ -24,16 +24,16 @@ class AuthController extends Controller
 
     public function registerSave(Request $request)
     {
-        Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required|confirmed'
-        ])->validate();
+        ]);
 
-        User::create([
+        DB::table('users')->insert([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
             'type' => "0"
         ]);
 
@@ -45,36 +45,95 @@ class AuthController extends Controller
         return view('auth/login');
     }
 
-    public function loginAction(Request $request)
+
+
+
+    public function insecureLoginAction(Request $request)
     {
-        Validator::make($request->all(), [
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $query = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
+
+        try {
+            $results = \DB::select($query);
+        } catch (QueryException $e) {
+
+            return redirect()->back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+        }
+
+        $user = null;
+        foreach ($results as $result) {
+            if ($result->email == $email) {
+                $user = $result;
+                break;
+            }
+        }
+
+        if ($user) {
+            \Auth::loginUsingId($user->id);
+            $request->session()->regenerate();
+
+            if ($user->type == 0) {
+                return redirect()->route('taskscopy/index');
+            } else {
+                return redirect()->route('admin/home');
+            }
+        }
+
+        return redirect()->back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+    }
+
+
+
+    public function secureLoginAction(Request $request)
+    {
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required'
-        ])->validate();
+        ]);
 
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed')
-            ]);
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $user = DB::table('users')->where('email', $email)->first();
+
+        if ($user && Hash::check($password, $user->password)) {
+            Auth::loginUsingId($user->id);
+            $request->session()->regenerate();
+
+            if ($user->type == 0) {
+                return redirect()->route('taskscopy/index');
+            } else {
+                return redirect()->route('admin/home');
+            }
         }
 
-        $request->session()->regenerate();
-
-        if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin/home');
-        } else {
-            return redirect()->route('user/taskscopy/index');
-        }
-
-        return redirect()->route('dashboard');
+        throw ValidationException::withMessages([
+            'email' => 'The provided credentials do not match our records.'
+        ]);
     }
+
+
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-
+        Auth::logout();
         $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect('/login');
     }
+
+    public function checkLoginType(Request $request)
+    {
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+
+        $isInsecure = strpos($password, " or") !== false;
+
+        return response()->json(['insecure' => $isInsecure]);
+    }
+
 }
